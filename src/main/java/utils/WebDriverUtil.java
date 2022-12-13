@@ -15,4 +15,8 @@ public class WebDriverUtil {
         }
         return driverInstance;
     }
+
+    public static void cleanUpDriver() {
+        driverInstance = null;
+    }
 }
