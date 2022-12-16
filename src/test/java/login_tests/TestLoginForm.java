@@ -1,30 +1,15 @@
 package login_tests;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import constants.UserData;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
-import pages.HomePage;
-import pages.LoginPage;
+import utils.DataGenerator;
 import utils.WaitUtil;
-import utils.WebDriverUtil;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestLoginForm {
-    private WebDriver driver;
-    private HomePage homePage;
-    private LoginPage loginPage;
-    private final String HOME_PAGE_URL = "https://www.jetbrains.com/";
+public class TestLoginForm extends CommonTest {
     private final String LOGIN_PAGE_URL = "https://account.jetbrains.com/login";
     private final String ENTER_USERNAME_ERROR_MESSAGE = "Please enter username or email address.";
-
-    @BeforeEach
-    public void setUp() {
-        driver = WebDriverUtil.getDriverInstance();
-        homePage = new HomePage(driver);
-        loginPage = new LoginPage(driver);
-    }
+    private final String INCORRECT_USERNAME_ERROR_MESSAGE = "Incorrect username and/or password";
 
     @Test
     public void openLoginPage() {
@@ -36,15 +21,15 @@ public class TestLoginForm {
     }
 
     @Test
-    public void loginWithCorrectData() {
+    public void checkLoginWithCorrectData() {
         driver.get(LOGIN_PAGE_URL);
         WaitUtil.waitForElementIsDisplayed(driver, loginPage.getEmailAddressInput());
-        loginPage.getEmailAddressInput().sendKeys("jetbrainstestmail@gmail.com");
-        loginPage.getPasswordInput().sendKeys("IFJCikdjcmsdilz");
+        loginPage.getEmailAddressInput().sendKeys(UserData.EMAIL);
+        loginPage.getPasswordInput().sendKeys(UserData.PASSWORD);
         loginPage.getSignInButton().click();
         WaitUtil.waitForElementIsDisplayed(driver, loginPage.getUserProfileSection());
         String userName = loginPage.getUserProfileSection().getText();
-        assertEquals("JBAccount Test", userName, "Actual and expected results don't match.");
+        assertEquals(UserData.USERNAME, userName, "Actual and expected results don't match.");
     }
 
     @Test
@@ -52,14 +37,20 @@ public class TestLoginForm {
         driver.get(LOGIN_PAGE_URL);
         WaitUtil.waitForElementIsDisplayed(driver, loginPage.getEmailAddressInput());
         loginPage.getSignInButton().click();
-        WaitUtil.waitForElementIsDisplayed(driver, loginPage.getEnterUsernameErrorMessage());
-        String errorMessage = loginPage.getEnterUsernameErrorMessage().getText();
+        WaitUtil.waitForElementIsDisplayed(driver, loginPage.getLoginFormErrorMessage());
+        String errorMessage = loginPage.getLoginFormErrorMessage().getText();
         assertEquals(errorMessage, ENTER_USERNAME_ERROR_MESSAGE,"Actual and expected results don't match.");
     }
 
-    @AfterEach
-    public void tearDown() {
-        driver.close();
-        WebDriverUtil.cleanUpDriver();
+    @Test
+    public void checkLoginWithIncorrectData() {
+        driver.get(LOGIN_PAGE_URL);
+        WaitUtil.waitForElementIsDisplayed(driver, loginPage.getEmailAddressInput());
+        loginPage.getEmailAddressInput().sendKeys(DataGenerator.generateInvalidEmail());
+        loginPage.getPasswordInput().sendKeys(DataGenerator.generatePassword());
+        loginPage.getSignInButton().click();
+        WaitUtil.waitForElementIsDisplayed(driver, loginPage.getLoginFormErrorMessage());
+        String errorMessage = loginPage.getLoginFormErrorMessage().getText();
+        assertEquals(errorMessage, INCORRECT_USERNAME_ERROR_MESSAGE,"Actual and expected results don't match.");
     }
 }

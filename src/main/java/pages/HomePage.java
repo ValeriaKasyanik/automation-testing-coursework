@@ -6,6 +6,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 public class HomePage {
+
     @FindBy(xpath="//*[@data-test='site-header-profile-action']/*[contains(@class, 'wt-icon')]")
     WebElement accountIcon;
 

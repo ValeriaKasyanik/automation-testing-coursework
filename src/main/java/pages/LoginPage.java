@@ -17,7 +17,7 @@ public class LoginPage {
     WebElement signInButton;
 
     @FindBy(css = ".text-danger")
-    WebElement enterUsernameErrorMessage;
+    WebElement loginFormErrorMessage;
 
     @FindBy(css = ".navbar-customer-name .dropdown-toggle")
     WebElement userProfileSection;
@@ -38,8 +38,8 @@ public class LoginPage {
         return signInButton;
     }
 
-    public WebElement getEnterUsernameErrorMessage() {
-        return enterUsernameErrorMessage;
+    public WebElement getLoginFormErrorMessage() {
+        return loginFormErrorMessage;
     }
 
     public WebElement getUserProfileSection() {
